@@ -1,15 +1,15 @@
 package src
 
 import (
-	"net/url"
 	"bytes"
-	"io/ioutil"
-	"fmt"
-	"encoding/json"
-	"sort"
 	"crypto/md5"
+	"encoding/json"
+	"fmt"
 	"io"
+	"io/ioutil"
 	"net/http"
+	"net/url"
+	"sort"
 )
 
 //发送邮件
@@ -17,7 +17,7 @@ func HttpSendMail(to string, body string) {
 	RequestURI := "http://sendcloud.sohu.com/webapi/mail.send.json"
 	//不同于登录SendCloud站点的帐号，您需要登录后台创建发信子帐号，使用子帐号和密码才可以进行邮件的发送。
 	PostParams := url.Values{
-		"api_user": {"usen"},
+		"api_user": {"user"},
 		"api_key":  {"key"},
 		"from":     {"service@sendcloud.im"},
 		"fromname": {"xxxx"},
@@ -51,7 +51,7 @@ func HttpSendSMS(phone string, code string) {
 		`phone`:      {phone},
 		`vars`:       {string(jsonVars)},
 	}
-	paramsKeyS := make([]string,0,len(PostParams))
+	paramsKeyS := make([]string, 0, len(PostParams))
 	for k, _ := range PostParams {
 		paramsKeyS = append(paramsKeyS, k)
 	}
@@ -64,7 +64,7 @@ func HttpSendSMS(phone string, code string) {
 	hashMd5 := md5.New()
 	io.WriteString(hashMd5, sb)
 	sign := fmt.Sprintf("%x", hashMd5.Sum(nil))
-	PostParams.Add("signature",sign)
+	PostParams.Add("signature", sign)
 
 	PostBody := bytes.NewBufferString(PostParams.Encode())
 	ResponseHandler, _ := http.Post(sms_url, "application/x-www-form-urlencoded", PostBody)
